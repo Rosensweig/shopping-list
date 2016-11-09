@@ -12,10 +12,8 @@ function addItem(state, item) {
 };
 
 function removeItem(state, item) {
-	var index = state.items.indexOf(item.text());
-	console.log(item);
-	console.log(item.text());
-	console.log($(item).text());
+	var index = state.items.indexOf(item.children("span").text());
+	console.log(index);
 	state.items.splice(index, 1);
 	state.checked.splice(index, 1);
 };
@@ -43,7 +41,9 @@ function renderChecked(state, element) {
 	var index=0;
 	element.children("li").each(function(item){
 		if (state.checked[index]===true) {
-			$(this).first().toggleClass("shopping-item__checked");
+			$(this).children("span").toggleClass("shopping-item__checked", true);
+		} else if (state.checked[index]===false) {
+			$(this).children("span").toggleClass("shopping-item__checked", false);
 		};
 		index++;
 	});
@@ -57,15 +57,15 @@ $('#js-shopping-list-form').submit(function(event) {
 	renderChecked(state, $(".shopping-list"));
 });
 
-$('.shopping-item-delete').click(function(event) {
+$('.shopping-list').on("click", ".shopping-item-delete", function(event) {
 	event.preventDefault();
-	removeItem(state, $(this).closest(".button-label"));
+	removeItem(state, $(this).parent().parent());
 	renderList(state, $(".shopping-list"));
 	renderChecked(state, $(".shopping-list"));
 });
 
-$('.shopping-item-toggle').click(function(event) {
+$('.shopping-list').on("click", ".shopping-item-toggle", function(event) {
 	event.preventDefault();
-	toggleChecked(state, $(this).closest(".button-label").text());
+	toggleChecked(state, $(this).parent().parent().children("span").text());
 	renderChecked(state, $(".shopping-list"));
 });
